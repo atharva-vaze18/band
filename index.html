@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neuqua Valley Saxophone — Atharva Vaze</title>
+<title>Band Portfolio</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -79,7 +79,7 @@
   .hero .frame{position:absolute;inset:0;overflow:hidden}
   .hero .frame img{
     width:100%;height:100%;
-    object-fit:cover;object-position:50% 38%;
+    object-fit:cover;object-position:32% 22%;
     filter:saturate(.94) contrast(1.05) brightness(.82);
     transform:scale(1.04);
     animation:slowZoom 22s ease-out forwards, fadeIn 1200ms ease-out both;
@@ -99,7 +99,7 @@
   .hero .plate{
     position:absolute;
     left:clamp(20px,4vw,48px);right:clamp(20px,4vw,48px);
-    bottom:clamp(20px,3.5vh,42px);
+    bottom:clamp(60px,10vh,110px);
     display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
     animation:riseIn 1000ms 200ms ease-out both;
   }
@@ -217,6 +217,54 @@
   .reveal{opacity:0;transform:translateY(10px);transition:opacity 800ms ease, transform 800ms cubic-bezier(.2,.7,.2,1)}
   .reveal.on{opacity:1;transform:none}
 
+  /* zoomable images */
+  .zoomable{cursor:zoom-in;transition:filter .25s ease}
+  .zoomable:hover{filter:brightness(1.05) saturate(1.02)}
+
+  /* lightbox */
+  .lightbox{
+    position:fixed;inset:0;z-index:1000;
+    background:rgba(5,10,22,.92);
+    backdrop-filter:blur(10px) saturate(120%);
+    -webkit-backdrop-filter:blur(10px) saturate(120%);
+    display:none;align-items:center;justify-content:center;
+    padding:clamp(20px,5vh,60px) clamp(20px,5vw,80px);
+    cursor:zoom-out;opacity:0;transition:opacity .25s ease;
+  }
+  .lightbox.on{display:flex;opacity:1}
+  .lightbox .lb-stage{
+    position:relative;max-width:min(1600px,96vw);max-height:90vh;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    animation:lbIn .35s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes lbIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+  .lightbox .lb-img{
+    max-width:100%;max-height:calc(90vh - 60px);
+    object-fit:contain;
+    box-shadow:0 30px 90px -20px rgba(0,0,0,.6);
+    border:1px solid rgba(236,230,216,.12);
+    background:#0a0a0a;cursor:default;
+  }
+  .lightbox .lb-cap{
+    font-family:"Playfair Display",serif;font-style:italic;font-weight:400;
+    color:var(--paper);font-size:14px;letter-spacing:.01em;
+    text-align:center;max-width:80ch;cursor:default;
+  }
+  .lightbox .lb-close{
+    position:absolute;top:18px;right:22px;z-index:2;
+    width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+    background:rgba(14,29,60,.65);color:var(--paper);
+    border:1px solid rgba(236,230,216,.18);
+    font-size:20px;line-height:1;cursor:pointer;
+    transition:all .2s ease;
+  }
+  .lightbox .lb-close:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+  .lightbox .lb-hint{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+    font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--paper-faint);pointer-events:none;
+  }
+
   /* --- responsive --- */
   @media (max-width:900px){
     body{overflow:auto;font-size:14px}
@@ -254,8 +302,6 @@
       <div class="role">
         <span>Alto / Tenor Saxophone</span>
         <span class="dot"></span>
-        <span>Section Leader</span>
-        <span class="dot"></span>
         <span class="muted">Class of 2026</span>
       </div>
       <div class="stamp">Neuqua Valley <em>Marching Band</em></div>
@@ -265,7 +311,7 @@
   <section class="lower">
 
     <div class="bio reveal">
-      <p>Three years of saxophone with Neuqua Valley's Marching Band and Wind Symphony. As section leader of fifteen, I help my section <em>prepare for performances</em> and build a community.</p>
+      <p>Three years of saxophone with Neuqua Valley's Marching Band and Wind Symphony — <em>concerts, marching shows,</em> and the section that's become a second family.</p>
       <div class="tag"><b>AV</b> · Alto / Tenor</div>
     </div>
 
@@ -290,6 +336,16 @@
 
 </div>
 
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+  <div class="lb-stage">
+    <img class="lb-img" id="lb-img" src="" alt="">
+    <div class="lb-cap" id="lb-cap"></div>
+  </div>
+  <div class="lb-hint">Click anywhere or press <b>Esc</b> to close</div>
+</div>
+
 <script>
   const io = new IntersectionObserver((entries)=>{
     for(const e of entries){
@@ -297,6 +353,43 @@
     }
   }, {threshold:.14});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  /* lightbox — click any image to enlarge */
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCap = document.getElementById('lb-cap');
+  const lbClose = document.getElementById('lb-close');
+
+  function openLB(img){
+    lbImg.src = img.currentSrc || img.src;
+    lbImg.alt = img.alt || '';
+    const fig = img.closest('figure') || img.closest('.hero') || img.closest('.frame');
+    let cap = '';
+    if (fig) {
+      const fc = fig.querySelector('figcaption, .role');
+      if (fc) cap = fc.textContent.replace(/\s+/g,' ').trim();
+    }
+    lbCap.textContent = cap;
+    lb.classList.add('on');
+    lb.setAttribute('aria-hidden','false');
+  }
+  function closeLB(){
+    lb.classList.remove('on');
+    lb.setAttribute('aria-hidden','true');
+    setTimeout(()=>{ lbImg.src=''; }, 250);
+  }
+
+  document.querySelectorAll('img').forEach(img => {
+    if (img.closest('.lightbox')) return;
+    img.classList.add('zoomable');
+    img.addEventListener('click', (e) => { e.stopPropagation(); openLB(img); });
+  });
+
+  lb.addEventListener('click', closeLB);
+  lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLB(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lb.classList.contains('on')) closeLB();
+  });
 </script>
 </body>
 </html>
