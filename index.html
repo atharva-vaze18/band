@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neuqua Valley Saxophone — Atharva Vaze</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="favicon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e1d3c;
+    --navy-edge:#050d22;
+    --paper:#ece6d8;
+    --paper-dim:#b8bccb;
+    --paper-faint:#6f7896;
+    --gold:#c9a84c;
+    --gold-deep:#8c7530;
+    --rule:rgba(236,230,216,.14);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--navy);
+    color:var(--paper);
+    font-family:"DM Sans",system-ui,sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow:hidden;             /* lock to viewport */
+    font-size:15px;
+    line-height:1.5;
+  }
+  img{display:block;max-width:100%;height:auto}
+
+  /* grain + vignette */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background:radial-gradient(140% 90% at 50% 40%, transparent 60%, var(--navy-edge) 100%);
+  }
+
+  /* one-viewport shell */
+  .page{
+    height:100vh;
+    display:grid;
+    grid-template-rows:auto 1.18fr 1fr auto;   /* topbar | hero | lower | footer */
+    position:relative;z-index:2;
+    min-height:620px;
+  }
+
+  /* --- top bar --- */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px clamp(20px,4vw,48px);
+    font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--paper-faint);
+  }
+  .topbar .L{display:flex;align-items:center;gap:14px}
+  .topbar .L b{color:var(--gold);font-weight:500;letter-spacing:.32em}
+  .topbar .L .sep{width:18px;height:1px;background:var(--gold-deep);display:inline-block}
+  .topbar .R{font-family:"Playfair Display",serif;font-style:italic;font-size:13px;letter-spacing:.02em;text-transform:none;color:var(--paper-dim)}
+
+  /* --- hero --- */
+  .hero{
+    position:relative;width:100%;
+    overflow:hidden;
+    min-height:0;
+  }
+  .hero .frame{position:absolute;inset:0;overflow:hidden}
+  .hero .frame img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:50% 38%;
+    filter:saturate(.94) contrast(1.05) brightness(.82);
+    transform:scale(1.04);
+    animation:slowZoom 22s ease-out forwards, fadeIn 1200ms ease-out both;
+  }
+  @keyframes slowZoom{from{transform:scale(1.08)}to{transform:scale(1.0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .hero .grad{
+    position:absolute;left:0;right:0;bottom:0;height:65%;
+    background:linear-gradient(to top, rgba(5,13,34,.92) 5%, rgba(5,13,34,.4) 55%, rgba(5,13,34,0) 100%);
+    pointer-events:none;
+  }
+  .hero .grad-top{
+    position:absolute;left:0;right:0;top:0;height:25%;
+    background:linear-gradient(to bottom, rgba(5,13,34,.55), rgba(5,13,34,0));
+    pointer-events:none;
+  }
+  .hero .plate{
+    position:absolute;
+    left:clamp(20px,4vw,48px);right:clamp(20px,4vw,48px);
+    bottom:clamp(20px,3.5vh,42px);
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    animation:riseIn 1000ms 200ms ease-out both;
+  }
+  @keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .hero .role{
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--paper);
+  }
+  .hero .role .dot{width:3px;height:3px;background:var(--gold);border-radius:50%;display:inline-block}
+  .hero .role .muted{color:var(--paper-faint)}
+  .hero .stamp{
+    font-family:"Playfair Display",serif;
+    font-weight:500;
+    color:var(--gold);
+    font-size:clamp(16px,1.5vw,22px);
+    line-height:1;
+    letter-spacing:-.005em;
+    white-space:nowrap;
+  }
+  .hero .stamp em{font-style:italic;font-weight:400;color:var(--paper);opacity:.85}
+
+  /* --- lower row --- */
+  .lower{
+    padding:clamp(18px,2.6vh,28px) clamp(20px,4vw,48px);
+    display:grid;
+    grid-template-columns:1.05fr 0.9fr 1.05fr;
+    gap:clamp(16px,2vw,26px);
+    min-height:0;
+  }
+  .lower > *{min-width:0;min-height:0}
+
+  /* bio cell */
+  .bio{
+    display:flex;flex-direction:column;justify-content:center;
+    padding-right:6px;
+    position:relative;
+  }
+  .bio::before{
+    content:"";
+    position:absolute;left:-2px;top:14%;bottom:14%;width:1px;
+    background:linear-gradient(to bottom, transparent, var(--gold-deep), transparent);
+    opacity:.6;
+  }
+  .bio p{
+    font-family:"Playfair Display",serif;
+    font-weight:400;
+    font-size:clamp(15px,1.3vw,18.5px);
+    line-height:1.5;
+    color:var(--paper);
+    letter-spacing:-.003em;
+    padding-left:14px;
+  }
+  .bio p em{font-style:italic;color:var(--gold)}
+  .bio .tag{
+    margin-top:14px;
+    padding-left:14px;
+    font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--paper-faint);
+  }
+  .bio .tag b{color:var(--gold);font-weight:500}
+
+  /* thumbnails */
+  .thumb{
+    position:relative;
+    overflow:hidden;
+    background:#0a1428;
+    height:100%;
+  }
+  .thumb img{
+    width:100%;height:100%;object-fit:cover;
+    filter:saturate(.94) contrast(1.05) brightness(.82);
+    transition:transform 1.6s ease;
+  }
+  .thumb:hover img{transform:scale(1.04)}
+  .thumb .grad{
+    position:absolute;left:0;right:0;bottom:0;height:55%;
+    background:linear-gradient(to top, rgba(5,13,34,.92) 5%, rgba(5,13,34,.25) 60%, rgba(5,13,34,0) 100%);
+    pointer-events:none;
+  }
+  .thumb figcaption{
+    position:absolute;
+    left:14px;right:14px;bottom:11px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+    font-family:"Playfair Display",serif;
+    font-weight:500;
+    color:var(--gold);
+    font-size:clamp(14px,1.25vw,18px);
+    line-height:1;
+    letter-spacing:-.005em;
+  }
+  .thumb figcaption em{font-style:italic;font-weight:400;color:var(--paper);opacity:.85}
+  .thumb figcaption .yr{
+    font-family:"DM Sans",sans-serif;font-weight:300;font-style:normal;
+    font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--paper-faint);
+  }
+
+  .thumb.sax img{object-position:50% 28%}
+  .thumb.selfie img{object-position:50% 32%}
+
+  /* --- footer --- */
+  footer{
+    padding:12px clamp(20px,4vw,48px) 14px;
+    border-top:1px solid var(--rule);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--paper-faint);
+  }
+  footer b{color:var(--gold);font-weight:500;letter-spacing:.3em}
+  footer .ital{
+    font-family:"Playfair Display",serif;font-style:italic;
+    text-transform:none;letter-spacing:.02em;font-size:12px;color:var(--paper-dim);
+  }
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity 800ms ease, transform 800ms cubic-bezier(.2,.7,.2,1)}
+  .reveal.on{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:900px){
+    body{overflow:auto;font-size:14px}
+    .page{height:auto;min-height:100vh;grid-template-rows:auto auto auto auto}
+    .hero{height:44vh;min-height:300px}
+    .lower{grid-template-columns:1fr;gap:14px;padding-bottom:24px}
+    .thumb{height:34vh;min-height:200px}
+    .bio{padding:6px 0}
+    .bio::before{display:none}
+    .bio p,.bio .tag{padding-left:0}
+  }
+  @media (max-width:520px){
+    .topbar{font-size:9px;padding:12px 16px}
+    .hero .plate{flex-direction:column;align-items:flex-start;gap:10px}
+    .hero .role{font-size:9.5px;letter-spacing:.22em;gap:8px 12px}
+    footer{flex-direction:column;align-items:flex-start;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="topbar">
+    <div class="L"><b>AV</b><span class="sep"></span>Neuqua Valley Saxophone</div>
+    <div class="R">Marching Band &amp; Wind Symphony</div>
+  </header>
+
+  <section class="hero">
+    <div class="frame">
+      <img src="compressed/IMG_0188.jpg" alt="The Neuqua Valley Marching Band on the stadium bleachers at a Friday night football game.">
+    </div>
+    <div class="grad-top"></div>
+    <div class="grad"></div>
+    <div class="plate">
+      <div class="role">
+        <span>Alto / Tenor Saxophone</span>
+        <span class="dot"></span>
+        <span>Section Leader</span>
+        <span class="dot"></span>
+        <span class="muted">Class of 2026</span>
+      </div>
+      <div class="stamp">Neuqua Valley <em>Marching Band</em></div>
+    </div>
+  </section>
+
+  <section class="lower">
+
+    <div class="bio reveal">
+      <p>Three years of saxophone with Neuqua Valley's Marching Band and Wind Symphony. As section leader of fifteen, I help my section <em>prepare for performances</em> and build a community.</p>
+      <div class="tag"><b>AV</b> · Alto / Tenor</div>
+    </div>
+
+    <figure class="thumb sax reveal">
+      <img src="compressed/IMG_3562.jpg" alt="Three saxophonists in formal concert attire holding their instruments after a Wind Symphony performance.">
+      <div class="grad"></div>
+      <figcaption><span>Wind Symphony <em>Saxes</em></span><span class="yr">2025</span></figcaption>
+    </figure>
+
+    <figure class="thumb selfie reveal">
+      <img src="compressed/IMG_0684.jpg" alt="The saxophone section in concert attire in the band room before a performance.">
+      <div class="grad"></div>
+      <figcaption><span>Crystal <em>Concert</em></span><span class="yr">Pre-show</span></figcaption>
+    </figure>
+
+  </section>
+
+  <footer>
+    <div><b>Atharva Vaze</b> &nbsp;·&nbsp; Saxophone</div>
+    <div class="ital">Neuqua Valley · MMXXVI</div>
+  </footer>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+    }
+  }, {threshold:.14});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
